@@ -1,0 +1,23 @@
+{
+  "id": "1557052",
+  "name": "家庭识别",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "691176",
+      "name": "定位",
+      "font_class": "dingwei",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "808009",
+      "name": "person",
+      "font_class": "person",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    }
+  ]
+}
