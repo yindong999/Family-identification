@@ -71,6 +71,7 @@ export default {
         width:80px;
         height:30px;
         background:#ff9d71;
+        cursor:pointer;
         color:#fff;
         display:flex;
         align-items: center;

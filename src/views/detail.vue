@@ -2,23 +2,23 @@
     <div class="detail">
         <div class="left">
           <!-- 顶部轮播 -->
-            <div class="swiper-container-up">
-                <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="i in 8">
+            <div class="swiper-container-up" id="chart">
+                <!-- <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="item in 7" :key="item.relevancdid">
                     <i class="iconfont iconperson"></i>
                     <div class="info">
-                        <p class="name">毛利</p>
-                        <p>购买:3 服务: 3</p>
+                        <p class="name">{{item.name}}</p>
+                        <p>购买:{{item.productNum}} 服务:{{item.serviceNum}}</p>
                     </div>
                 </div>
-                </div>
+                </div> -->
             </div>
-            <div class="line-up">
+            <!-- <div class="line-up">
                 <img class="line1" src="../static/line1.png" alt="">
-                <img class="line2" src="../static/line2.png" alt="">
-                <img class="line3" src="../static/line2.png" alt="">
-                <img class="line4" src="../static/line1.png" alt="">
-            </div>
+                <img  class="line2" src="../static/line2.png" alt="">
+                <img  class="line3" src="../static/line2.png" alt="">
+                <img  class="line4" src="../static/line1.png" alt="">
+            </div> -->
             <!-- 中间部分 -->
             <div class="middle">
                 <div class="buy">
@@ -43,19 +43,19 @@
                 </div>
             </div>
             <div class="line-bottom">
-                <img class="line1" src="../static/line1.png" alt="">
-                <img class="line2" src="../static/line2.png" alt="">
-                <img class="line3" src="../static/line2.png" alt="">
-                <img class="line4" src="../static/line1.png" alt="">
+                <img v-if="weak.length == 1" class="line1" src="../static/line1.png" alt="">
+                <img v-if="weak.length >= 2" class="line2" src="../static/line2.png" alt="">
+                <img v-if="weak.length >= 3" class="line3" src="../static/line2.png" alt="">
+                <img v-if="weak.length >= 4" class="line4" src="../static/line1.png" alt="">
             </div>
             <!-- 底部轮播 -->
             <div class="swiper-container-bottom">
                 <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="i in 4">
+                <div class="swiper-slide" v-for="item in weak" :key="item.relevancdid">
                     <i class="iconfont iconperson"></i>
                     <div class="info">
-                        <p class="name">毛利</p>
-                        <p>购买:3 服务: 3</p>
+                        <p class="name">{{item.name}}</p>
+                        <p>购买:{{item.productNum}} 服务:{{item.serviceNum}}</p>
                     </div>
                 </div>
                 </div>
@@ -78,20 +78,20 @@
             <!-- 家庭成员 -->
             <div class="members" v-if="tab == 'members'">
                 <el-table :data="tableData" border style="width: 100%">
-                    <el-table-column prop="date" label="序号" width="50"></el-table-column>
+                    <el-table-column prop="sourceid" label="序号" width="50"></el-table-column>
                     <el-table-column prop="name" label="姓名"></el-table-column>
-                    <el-table-column prop="address" label="手机号码" width="100"></el-table-column>
-                    <el-table-column prop="address" label="购买次数" width="80"></el-table-column>
-                    <el-table-column prop="address" label="服务次数" width="80"></el-table-column>
+                    <el-table-column prop="mobile" label="手机号码" width="100"></el-table-column>
+                    <el-table-column prop="productNum" label="购买次数" width="80"></el-table-column>
+                    <el-table-column prop="serviceNum" label="服务次数" width="80"></el-table-column>
                 </el-table>
             </div>
             <!-- 购买历史 -->
             <div class="buyHistory" v-if="tab == 'buyHistory'">
-                <div class="item" v-for="i in 3">
-                    <div class="title"><p></p><span>产品型号：S7516Z61    海尔波轮</span></div>
-                    <div><p><span>姓名</span><span class="name">王建国</span></p><span>购买途径:线上</span></div>
-                    <div><p>购买日期:2019-10-11</p><p>价格:233元</p></div>
-                    <div><p>机械编码：GX123981320127839072DXXX</p><p>是否过保:否</p></div>
+                <div class="item" v-for="(item,index) in buyHistory" :key="index">
+                    <div class="title"><p></p><span>产品型号:{{item.productcode}} {{item.productcategory}}</span></div>
+                    <div><p><span>姓名</span><span class="name">{{item.name}}</span></p><span>购买途径:线上</span></div>
+                    <div><p>购买日期:{{item.purchasedate}}</p><p>价格:{{item.price ? item.price + '元' : '未记录'}}</p></div>
+                    <div><p>机械编码：{{item.productno || '未记录'}}</p><p>是否过保:否</p></div>
                 </div>
             </div>   
             <!-- 服务历史 -->
@@ -141,16 +141,20 @@
 </template>
 <script>
 import Swiper from "swiper";
+import echarts from "echarts";
 export default {
     data(){
         return{
             tab:"jilu",
             tableData:[],
+            weak:[],
+            strong:[],
+            buyHistory:[],
             activities:[{
                 icon:'',
                 type:'',
                 color:'#0bbd87',
-                content:'这里是内husahudusiau爱上对撒iu撒花都赛u大上帝啊时间都i撒娇哦i反对撒娇都i祭扫i发啥叫滴哦撒娇殴打容部分',
+                content:'这里是哦撒娇殴打容部分',
                 timestamp:'2019-10-29'
             },{
                 icon:'',
@@ -161,7 +165,21 @@ export default {
             }]
         }
     },
+    created(){
+        this.$get("detail",{
+            relevancdid:666,
+            customerid:222
+        }).then(res =>{
+            console.log(res)
+            this.strong = res.strong.concat();
+            this.weak = res.weak.concat();
+            this.tableData = res.strong.concat(res.weak);
+            this.buyHistory = res.product.concat();
+        })
+    },
     mounted(){
+        var myChart = echarts.init(document.getElementById("chart"), "light");
+        myChart.setOption();
         var swiper_up = new Swiper('.swiper-container-up', {
             slidesPerView: 4,
             spaceBetween: 30,
@@ -197,12 +215,12 @@ export default {
         margin-top:100px;
         display:flex;
         flex-direction: column;
-        // justify-content: space-between;
         align-items: center;
         overflow: hidden;
         .swiper-container-up,.swiper-container-bottom{
             width:100%;
-            height:70px;
+            height:150px;
+            flex-shrink: 0;
             .swiper-wrapper{
                 width:100%;
                 height:100%;
@@ -213,6 +231,7 @@ export default {
                     height:90%;
                     align-items: center;
                     border-bottom:5px solid #ff9d71;
+                    width:180px;
                     i{
                         font-size:40px;
                         margin-left:15px;
@@ -343,6 +362,7 @@ export default {
                     color:#ff9d71;
                     margin-top:15px;
                     margin-right:40%;
+                    cursor:pointer;
                 }
             }
         }
@@ -398,6 +418,7 @@ export default {
             font-size:14px;
             align-items: center;
             font-family:"黑体";
+            cursor:pointer;
             &>.active{
                 color:#0091ff;
             }

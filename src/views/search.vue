@@ -19,7 +19,7 @@
         <p>当前第<span> 1 </span>页/共<span> 23 </span>页</p>
     </div>
     <div class="content">
-        <div class="item" v-for='item in 2' @click='toDetail' :key="item.id">
+        <div class="item" v-for='item in searchResult' @click='toDetail()' :key="item.id">
             <p class='info'><img src="../static/info.png" alt=""><span>{{item.relevancdid}}</span></p>
             <p class='position'><img src="../static/position.png" alt=""><span>{{item.address}}</span></p>
             <p class="gray"><span>家庭成员</span><span>{{item.familyNum}}人</span></p>
@@ -40,11 +40,11 @@ export default {
     },
     created(){
         console.log(this.$route.params.keyWord);
-        // this.$get('search',{
-        //     queryStr:this.$route.params.keyWord
-        // }).then(res =>{
-        //     this.searchResult = res.concat();
-        // })
+        this.$get('search',{
+            queryStr:this.$route.params.keyWord
+        }).then(res =>{
+            this.searchResult = res.concat();
+        })
     },
     methods:{
         handleSizeChange(){
@@ -119,6 +119,7 @@ export default {
                 width:80px;
                 height:30px;
                 background:#ff9d71;
+                cursor:pointer;
                 color:#fff;
                 display:flex;
                 align-items: center;
@@ -143,6 +144,7 @@ export default {
                 width:650px;
             }
             .button{
+                cursor:pointer;
                 width:50px;
                 height:25px;
                 text-align: center;
@@ -178,6 +180,7 @@ export default {
                 margin:0 10px;
                 background:#fff;
                 border-radius:10px;
+                cursor:pointer;
                 &>p{
                     color:#767885;
                     display:flex;
